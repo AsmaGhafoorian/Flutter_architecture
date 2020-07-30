@@ -8,19 +8,16 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_test_app/src/model/movie_model.dart';
 
 
-  class MovieApiProvider {
-
     MovieModel parsMovie(String response) {
-      final data = json.decode(response).cast<Map<String, dynamic>>();
-      return data.map<MovieModel>((json) => MovieModel.fromJson(json));
+      final data = json.decode(response);
+      return  MovieModel.fromJson(data);
     }
 
     Future<MovieModel> fetchMovie() async {
-      http.Client client;
+      http.Client client = http.Client();
       final response = await client.get(
-
-          "https://api.themoviedb.org/3/movie/550?api_key=b3f2a364585013211a4462d5c408b143",
-          headers: {HttpHeaders.authorizationHeader: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiM2YyYTM2NDU4NTAxMzIxMWE0NDYyZDVjNDA4YjE0MyIsInN1YiI6IjVmMjE1MGNmNWIxMjQwMDAzNDIxZWM4NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.T7fX5C7P_vFPG7B4zKdh5bjWVsYttd0r9W8T3BHpqDw"});
+          "https://api-beta.asiatech.ir/api/v1/mobile/club",
+          headers: {HttpHeaders.authorizationHeader: "wZwqdyPwwqC9Lxa2SoXT9sfj0GtyaZjnWvARdcXOe0Rjx3PflPkkvC0Wg1cfzJRV1Y8PeiUJTWC2DC4JkC73ftvCjb4ZBAQNgFfcNuzwLfCVuI3DzAbYA0bVk7GrvUElzkl7UVgvhJE84T9g8bTlekUxLmzc6DFNXxBWBnKn94FBg64M"});
 
       print(response.body.toString());
 
@@ -29,4 +26,3 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
       else
         throw Exception('Failed to load post');
     }
-  }

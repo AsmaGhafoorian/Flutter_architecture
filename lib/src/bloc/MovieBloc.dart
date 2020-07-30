@@ -4,22 +4,21 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/network/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MovieBloc{
+class MoviesBloc {
+  final _repository = Repository();
+  final _moviesFetcher = PublishSubject<MovieModel>();
 
-  final  repository = Repository();
+  Stream<MovieModel> get allMovies => _moviesFetcher.stream;
 
-  // ignore: close_sinks
-  final moviesFetcher = PublishSubject<MovieModel>();  //RxDart. PublishSubject : responsibility is to add the data which it got from the server in the form of ItemModel object and pass it to the UI screen as a stream
-
-  Stream<MovieModel> get allMovie => moviesFetcher.stream;
-
-  fetchAllMovie() async {
-    MovieModel data = await repository.getAllMovie();
-    moviesFetcher.sink.add(data);
+  fetchAllMovies() async {
+    MovieModel itemModel = await _repository.getAllMovie();
+    _moviesFetcher.sink.add(itemModel);
   }
+
   dispose() {
-    moviesFetcher.close();
+    _moviesFetcher.close();
   }
 }
-final bloc = MovieBloc();
+
+final bloc = MoviesBloc();
 

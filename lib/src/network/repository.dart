@@ -5,7 +5,6 @@ import 'package:flutter_test_app/src/network/movie_api.dart';
 
 class Repository{
 
-  final movieRepository = MovieApiProvider();
 
-  Future<MovieModel> getAllMovie() => movieRepository.fetchMovie();
+  Future<MovieModel> getAllMovie() => fetchMovie();
 }
