@@ -7,4 +7,6 @@ class Repository{
 
 
   Future<MovieModel> getAllMovie() => fetchMovie();
+  Future<MovieModel> fetchTrailers(int movieId) => fetchTrailer(movieId);
+
 }

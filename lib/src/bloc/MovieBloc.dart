@@ -20,5 +20,7 @@ class MoviesBloc {
   }
 }
 
-final bloc = MoviesBloc();
+final bloc = MoviesBloc(); // single instance(singleton) of bloc that every class can access it
 
+//https://medium.com/flutterpub/architect-your-flutter-project-using-bloc-pattern-part-2-d8dd1eca9ba5
+// az in baraye scoped instance estefade kon bejaye singleton dar proje haye bozorg
