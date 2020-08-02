@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:inject/inject.dart';
 
 import 'package:flutter_test_app/src/model/movie_model.dart';
 
@@ -13,11 +14,11 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
       return  MovieModel.fromJson(data);
     }
 
-    Future<MovieModel> fetchMovie() async {
-      http.Client client = http.Client();
+    @provide
+    Future<MovieModel> fetchMovie(http.Client client) async {
       final response = await client.get(
           "https://api-beta.asiatech.ir/api/v1/mobile/club",
-          headers: {HttpHeaders.authorizationHeader: "51JJo8rDOYfFi0OsbcDykD1b9BOEYi2KVeNSh4RiWWvqLxtL0D64seAxEY4HSyypWo5pMOeLquumw87eebWczBmE3S7yG8tTMB1e8o0vLjwA5RNzeQxxzNpOqMl2jKvIvzUjjDD7wJDQrNl8OCi5DGrFvEUgFVH7170URU2i0FYcbQB8ZOI3WBfnmJ2vIZBCXmIr"});
+          headers: {HttpHeaders.authorizationHeader: "enJ8J3MHpsJx0bMX9MMjCdMSKcFQK0TJubo6YNQaPxrWuKhiv8nqXGEdFOlC97RskU80hpBeimSkZspTkdMn3QOUC0QtMpV1GnByBMEiYzpZP1SntS7BuZruk8ctp6usVhcVyBO4LluG2S2h2oET0cw7rZ2gLsarm8C8l2BCApBq5rNRPBNoKzGLERFnpNPnLxOdMx7YaoFV"});
 
       print(response.body.toString());
 

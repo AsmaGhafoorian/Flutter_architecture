@@ -28,7 +28,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.2"
   build:
     dependency: transitive
     description:
@@ -133,7 +133,7 @@ packages:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   csslib:
     dependency: transitive
     description:
@@ -216,6 +216,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0-alpha"
+  inject_generator:
+    dependency: "direct dev"
+    description:
+      path: "injection/inject.dart/package/inject_generator"
+      relative: true
+    source: path
+    version: "1.0.0-alpha"
   io:
     dependency: transitive
     description:
@@ -257,7 +264,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.6"
+    version: "0.12.9"
   meta:
     dependency: transitive
     description:
@@ -299,7 +306,7 @@ packages:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.4"
+    version: "1.7.0"
   pedantic:
     dependency: transitive
     description:
@@ -381,7 +388,7 @@ packages:
       name: stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.3"
+    version: "1.9.5"
   stream_channel:
     dependency: transitive
     description:

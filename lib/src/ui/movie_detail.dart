@@ -56,14 +56,14 @@ class MovieDetailState extends State<MovieDetail> {
   @override
   void didChangeDependencies() {
     bloc = MovieDetailBlocProvider.of(context);
-    bloc.fetchTrailersById(movieId);
+//    bloc.fetchTrailersById(movieId);
     print("recreated");
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+//    bloc.dispose();
     super.dispose();
   }
 
@@ -144,7 +144,7 @@ class MovieDetailState extends State<MovieDetail> {
                       ),
                       Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
                       StreamBuilder(
-                        stream: bloc.movieTrailers,
+//                        stream: bloc.movieTrailers,
                         builder: (context,
                             AsyncSnapshot<Future<MovieModel>> snapshot) {
                           if (snapshot.hasData) {
@@ -186,20 +186,20 @@ class MovieDetailState extends State<MovieDetail> {
   }
 
   Widget trailerLayout(MovieModel data) {
-    if (data.results.length > 1) {
+//    if (data.results.length > 1) {
       return Row(
         children: <Widget>[
           trailerItem(data, 0),
           trailerItem(data, 1),
         ],
       );
-    } else {
-      return Row(
-        children: <Widget>[
-          trailerItem(data, 0),
-        ],
-      );
-    }
+//    } else {
+//      return Row(
+//        children: <Widget>[
+//          trailerItem(data, 0),
+//        ],
+//      );
+//    }
   }
 
   trailerItem(MovieModel data, int index) {

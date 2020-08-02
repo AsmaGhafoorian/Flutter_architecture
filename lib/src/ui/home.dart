@@ -6,8 +6,16 @@ import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 
+import 'package:inject/inject.dart';
 
+import '../bloc/MovieBloc.dart';
+
+@provide
 class Home extends StatefulWidget{
+  final MoviesBloc bloc;
+
+  const Home(this.bloc);
+
   @override
   _Movie createState() => _Movie();
 
@@ -16,13 +24,13 @@ class Home extends StatefulWidget{
 class _Movie extends State<Home>{
 @override
   void initState() {
-    bloc.fetchAllMovies();
+    widget.bloc.fetchAllMovies();
 
   }
 
   @override
   void dispose() {
-    bloc.dispose();
+    widget.bloc.dispose();
   }
 
   @override
@@ -41,7 +49,7 @@ class _Movie extends State<Home>{
           centerTitle: true,
         ),
         body: StreamBuilder(
-          stream: bloc.allMovies,
+          stream:  widget.bloc.allMovies,
           builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
             if (snapshot.hasError) print(snapshot.error);
@@ -63,6 +71,7 @@ class _Movie extends State<Home>{
         height: 200,
 
         child: ListView.builder(
+          reverse: true,
           scrollDirection: Axis.horizontal,
           itemCount: snapshot.data.items.length,
           itemBuilder: (context, index) {

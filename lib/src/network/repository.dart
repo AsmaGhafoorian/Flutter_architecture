@@ -3,10 +3,19 @@
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/network/movie_api.dart';
 
+import 'package:inject/inject.dart';
+import 'package:http/http.dart' as http;
+
+
 class Repository{
 
 
-  Future<MovieModel> getAllMovie() => fetchMovie();
+  final http.Client client;
+
+  @provide
+  Repository(this.client);
+
+  Future<MovieModel> getAllMovie() => fetchMovie(client);
   Future<MovieModel> fetchTrailers(int movieId) => fetchTrailer(movieId);
 
 }
