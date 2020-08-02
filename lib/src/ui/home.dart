@@ -22,7 +22,9 @@ class Home extends StatefulWidget{
 }
 
 class _Movie extends State<Home>{
-@override
+  int _currentIndex = 0;
+
+  @override
   void initState() {
     widget.bloc.fetchAllMovies();
 
@@ -35,7 +37,7 @@ class _Movie extends State<Home>{
 
   @override
   Widget build(BuildContext context) {
-   return(MaterialApp(
+  return(MaterialApp(
      theme: ThemeData(
      brightness: Brightness.light,
      primaryColor: Colors.white,
@@ -60,7 +62,33 @@ class _Movie extends State<Home>{
                     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
             ));
               }
-          )
+          ),
+       bottomNavigationBar: BottomNavigationBar(
+         items: const <BottomNavigationBarItem>[
+           BottomNavigationBarItem(
+             icon: Icon(Icons.insert_chart),
+             title: Text(''),
+           ),
+           BottomNavigationBarItem(
+             icon: Icon(Icons.home),
+             title: Text(''),
+           ),
+           BottomNavigationBarItem(
+             icon: Icon(Icons.person_outline),
+             title: Text('School'),
+           ),
+           BottomNavigationBarItem(
+             icon: Icon(Icons.build),
+             title: Text('')
+           )
+         ],
+         currentIndex : _currentIndex,
+         selectedItemColor: Colors.red,
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+         showSelectedLabels: false,
+         showUnselectedLabels: false,
+       ),
       ),
    )
    );
@@ -105,8 +133,15 @@ class _Movie extends State<Home>{
           },
         )
     );
+
+
   }
 
+    void _onItemTapped(int index){
+        setState(() {
+          _currentIndex = index;
+        });
+    }
 
   openDetailPage(MovieModel data, int index) {
     final page = MovieDetailBlocProvider(
