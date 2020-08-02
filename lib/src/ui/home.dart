@@ -80,7 +80,7 @@ class _Movie extends State<Home>{
            BottomNavigationBarItem(
              icon: Icon(Icons.build),
              title: Text('')
-           )
+           ),
          ],
          currentIndex : _currentIndex,
          selectedItemColor: Colors.red,
@@ -88,6 +88,7 @@ class _Movie extends State<Home>{
           onTap: _onItemTapped,
          showSelectedLabels: false,
          showUnselectedLabels: false,
+
        ),
       ),
    )
