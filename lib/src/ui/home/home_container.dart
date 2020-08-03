@@ -5,23 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
+import 'package:flutter_test_app/src/ui/home/chart.dart';
+import 'package:flutter_test_app/src/ui/home/home.dart';
 
 import 'package:inject/inject.dart';
 
-import '../bloc/MovieBloc.dart';
+import '../../bloc/MovieBloc.dart';
+
+typedef Provider<T> = T Function();
 
 @provide
-class Home extends StatefulWidget{
+class HomeContainer extends StatefulWidget{
   final MoviesBloc bloc;
+  final Provider<Home> home;
 
-  const Home(this.bloc);
+  const HomeContainer(this.bloc, this.home);
 
   @override
   _Movie createState() => _Movie();
 
 }
 
-class _Movie extends State<Home>{
+class _Movie extends State<HomeContainer>{
   int _currentIndex = 0;
 
   @override
@@ -50,20 +55,40 @@ class _Movie extends State<Home>{
           title: Text('Asiatech'),
           centerTitle: true,
         ),
-        body: StreamBuilder(
-          stream:  widget.bloc.allMovies,
-          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
-            if (snapshot.hasError) print(snapshot.error);
-
-            return snapshot.hasData
-              ? moviesList( snapshot)
-                  : Center(child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-            ));
-              }
-          ),
+        body: Stack(
+          children: <Widget>[
+            new Offstage(
+              offstage: _currentIndex != 0,
+              child: new TickerMode(
+                enabled: _currentIndex == 0,
+                child: new MaterialApp(home: Chart(widget.bloc)),
+              ),
+            ),
+            new Offstage(
+              offstage: _currentIndex != 1,
+              child: new TickerMode(
+                enabled: _currentIndex == 1,
+                child: new MaterialApp(home: widget.home()),
+              ),
+            ),
+          ],
+        ),
+//        body: StreamBuilder(
+//          stream:  widget.bloc.allMovies,
+//          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+//
+//            if (snapshot.hasError) print(snapshot.error);
+//
+//            return snapshot.hasData
+//              ? moviesList( snapshot)
+//                  : Center(child: CircularProgressIndicator(
+//                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+//            ));
+//              }
+//          ),
        bottomNavigationBar: BottomNavigationBar(
+         type: BottomNavigationBarType.fixed,
          items: const <BottomNavigationBarItem>[
            BottomNavigationBarItem(
              icon: Icon(Icons.insert_chart),

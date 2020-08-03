@@ -5,7 +5,6 @@ import 'package:flutter_test_app/src/network/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:inject/inject.dart';
 
-@provide
 class MoviesBloc {
   final Repository _repository ;
   final _moviesFetcher = PublishSubject<MovieModel>();

@@ -4,7 +4,7 @@ import 'package:http/src/client.dart' as _i3;
 import '../network/repository.dart' as _i4;
 import 'dart:async' as _i5;
 import '../../main.dart' as _i6;
-import '../ui/home.dart' as _i7;
+import '../ui/home/home_container.dart' as _i7;
 import '../bloc/MovieBloc.dart' as _i8;
 
 class BlocInjector$Injector implements _i1.BlocInjector {
@@ -23,7 +23,7 @@ class BlocInjector$Injector implements _i1.BlocInjector {
   }
 
   _i6.App _createApp() => _i6.App(_createHome);
-  _i7.Home _createHome() => _i7.Home(_createMoviesBloc());
+  _i7.HomeContainer _createHome() => _i7.HomeContainer(_createMoviesBloc());
   _i8.MoviesBloc _createMoviesBloc() =>
       _blocModule.movieBloc(_createRepository());
   _i4.Repository _createRepository() =>
@@ -31,4 +31,8 @@ class BlocInjector$Injector implements _i1.BlocInjector {
   _i3.Client _createClient() => _singletonClient ??= _blocModule.client();
   @override
   _i6.App get app => _createApp();
+
+  @override
+  // TODO: implement home
+  _i7.HomeContainer get home => throw UnimplementedError();
 }
