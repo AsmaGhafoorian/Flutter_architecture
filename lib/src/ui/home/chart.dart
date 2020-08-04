@@ -18,62 +18,58 @@ class Chart extends StatefulWidget{
    Chart(this.bloc);
 
   @override
-  _Movie createState() => _Movie();
+  _ChartState createState() => _ChartState();
 
 }
 
-class _Movie extends State<Chart>{
-  int _currentIndex = 0;
+class _ChartState extends State<Chart>{
 
   @override
   void initState() {
+    super.initState();
     widget.bloc.fetchAllMovies();
 
   }
 
   @override
   void dispose() {
+    super.dispose();
     widget.bloc.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return(MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.white,
-        accentColor: Colors.grey,
-      ),
-      color : Colors.grey,
 
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Chart'),
-          centerTitle: true,
-        ),
+    return(Container(
 
-        body: StreamBuilder(
-          stream:  widget.bloc.allMovies,
-          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+      child : Column(
+        children: <Widget>[
+          Container(
+            child: StreamBuilder(
+                stream:  widget.bloc.allMovies,
+                builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
-            if (snapshot.hasError) print(snapshot.error);
+                  if (snapshot.hasError) print(snapshot.error);
 
-            return snapshot.hasData
-              ? moviesList( snapshot)
-                  : Center(child: CircularProgressIndicator(
+                  return snapshot.hasData
+                      ? moviesList( snapshot)
+                      : Center(child: CircularProgressIndicator(
                     valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-            ));
-              }
+                  ));
+                }
+            ),
           ),
-    ),
+        ],
+
+    )
     )
     );
+
   }
 
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
     return Container(
         height: 200,
-
         child: ListView.builder(
           reverse: true,
           scrollDirection: Axis.horizontal,
@@ -81,10 +77,10 @@ class _Movie extends State<Chart>{
           itemBuilder: (context, index) {
 
             return GestureDetector(
-                onTap: () => openDetailPage(snapshot.data, index),
 
                 child: Container(
                     width: 200,
+                    height: 200,
                     color: Colors.white,
                     margin: EdgeInsets.all(10),
                     child : Column(
@@ -95,12 +91,27 @@ class _Movie extends State<Chart>{
                                 Image.network(
                                   snapshot.data.items[index].iconUri,
                                   width: 50,
-                                  height : 50,
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.more),
                                 )
                               ]
+                          ),
+
+                          Container(
+
+                          child: Align(
+                              alignment: Alignment.bottomCenter,
+                               child: Text(
+                                    snapshot.data.items[index].profileName,
+
+                                    style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                    textDirection: TextDirection.rtl,
+                                ),
+                               )
                           )
                         ]
                     )
@@ -112,30 +123,4 @@ class _Movie extends State<Chart>{
 
 
   }
-
-  void _onItemTapped(int index){
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  openDetailPage(MovieModel data, int index) {
-    final page = MovieDetailBlocProvider(
-//      child: MovieDetail(
-//        title: data.results[index].title,
-//        posterUrl: data.results[index].backdrop_path,
-//        description: data.results[index].overview,
-//        releaseDate: data.results[index].release_date,
-//        voteAverage: data.results[index].vote_average.toString(),
-//        movieId: data.results[index].id,
-//      ),
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return page;
-      }),
-    );
-  }
-
 }

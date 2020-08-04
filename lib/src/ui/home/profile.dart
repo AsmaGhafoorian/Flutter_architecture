@@ -12,16 +12,17 @@ import '../../bloc/MovieBloc.dart';
 
 
 @provide
-class Home extends StatefulWidget{
+class Profile extends StatefulWidget{
   final MoviesBloc bloc;
 
-  Home(this.bloc);
+  Profile(this.bloc);
+
   @override
-  _Movie createState() => _Movie();
+  _ProfileState createState() => _ProfileState();
 
 }
 
-class _Movie extends State<Home>{
+class _ProfileState extends State<Profile>{
 
   @override
   void initState() {
@@ -40,19 +41,19 @@ class _Movie extends State<Home>{
 
     return(Container(
 
-        child: StreamBuilder(
-            stream:  widget.bloc.allMovies,
-            builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+      child: StreamBuilder(
+          stream:  widget.bloc.allMovies,
+          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
-              if (snapshot.hasError) print(snapshot.error);
+            if (snapshot.hasError) print(snapshot.error);
 
-              return snapshot.hasData
-                  ? moviesList( snapshot)
-                  : Center(child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-              ));
-            }
-        ),
+            return snapshot.hasData
+                ? moviesList( snapshot)
+                : Center(child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+            ));
+          }
+      ),
     )
     );
 

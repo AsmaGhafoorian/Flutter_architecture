@@ -2,11 +2,13 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/ui/home/chart.dart';
 import 'package:flutter_test_app/src/ui/home/home.dart';
+import 'package:flutter_test_app/src/ui/home/profile.dart';
 
 import 'package:inject/inject.dart';
 
@@ -26,18 +28,31 @@ class HomeContainer extends StatefulWidget{
 
 }
 
-class _Movie extends State<HomeContainer>{
+class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
   int _currentIndex = 0;
+//  @override
+//  Future<bool> didPopRoute()  {
+//    if(_currentIndex != 0){
+//       Navigator.of(context).pop(false);
+//    }else {
+//      Navigator.of(context).pop(true);
+//    }
+//}
 
   @override
   void initState() {
+    super.initState();
     widget.bloc.fetchAllMovies();
+    WidgetsBinding.instance.addObserver(this);
 
   }
 
   @override
   void dispose() {
     widget.bloc.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
   }
 
   @override
@@ -72,21 +87,16 @@ class _Movie extends State<HomeContainer>{
                 child: new MaterialApp(home: widget.home()),
               ),
             ),
+            new Offstage(
+              offstage: _currentIndex != 2,
+              child: new TickerMode(
+                enabled: _currentIndex == 2,
+                child: new MaterialApp(home:  Profile(widget.bloc)),
+              ),
+            ),
           ],
         ),
-//        body: StreamBuilder(
-//          stream:  widget.bloc.allMovies,
-//          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
-//
-//            if (snapshot.hasError) print(snapshot.error);
-//
-//            return snapshot.hasData
-//              ? moviesList( snapshot)
-//                  : Center(child: CircularProgressIndicator(
-//                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-//            ));
-//              }
-//          ),
+
        bottomNavigationBar: BottomNavigationBar(
          type: BottomNavigationBarType.fixed,
          items: const <BottomNavigationBarItem>[

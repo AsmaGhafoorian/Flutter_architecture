@@ -1,5 +1,6 @@
 
 
+import 'package:flutter_test_app/src/ui/home/chart.dart';
 import 'package:http/http.dart';
 import 'package:inject/inject.dart';
 
@@ -19,4 +20,8 @@ class BlocModule{
 
   @provide
   MoviesBloc movieBloc(Repository repository) => MoviesBloc(repository);
+
+  @provide
+  @singleton
+  Chart chart(MoviesBloc movieBloc) => Chart(movieBloc);
 }

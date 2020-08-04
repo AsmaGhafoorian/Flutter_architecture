@@ -9,8 +9,10 @@ import 'package:inject/inject.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 
 
-    MovieModel parsMovie(String response) {
-      final data = json.decode(response);
+    MovieModel parsMovie(List<int> response) {
+      final data = json.decode(utf8.decode(response));
+      print( data);
+
       return  MovieModel.fromJson(data);
     }
 
@@ -18,12 +20,12 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
     Future<MovieModel> fetchMovie(http.Client client) async {
       final response = await client.get(
           "https://api-beta.asiatech.ir/api/v1/mobile/club",
-          headers: {HttpHeaders.authorizationHeader: "enJ8J3MHpsJx0bMX9MMjCdMSKcFQK0TJubo6YNQaPxrWuKhiv8nqXGEdFOlC97RskU80hpBeimSkZspTkdMn3QOUC0QtMpV1GnByBMEiYzpZP1SntS7BuZruk8ctp6usVhcVyBO4LluG2S2h2oET0cw7rZ2gLsarm8C8l2BCApBq5rNRPBNoKzGLERFnpNPnLxOdMx7YaoFV"});
+          headers: {HttpHeaders.authorizationHeader: "cd8St4CBUQfxxzeaRbfhzirtHv7keEQkc3C8J1AytGgZtA1xJXXigqlzjBcFoh4clNdPEZBsN3aXE5OoQ9Y1eEonPiQCObM8XSvwr42euxljsp4TX0RRgkDX8rRxXymCA8FOdIjRV24E79I0oxXjFVPPNUHzqqQTIFIizk5",
+                    'Content-Type': 'application/json'});
 
-      print(response.body.toString());
 
       if (response.statusCode == 200)
-        return compute(parsMovie, response.body);
+        return compute(parsMovie, response.bodyBytes);
       else
         throw Exception('Failed to load post');
     }
@@ -35,7 +37,7 @@ Future<MovieModel> fetchTrailer(int movieId) async {
   final response = await client.get("https://api-beta.asiatech.ir/api/v1/mobile/club");
 
   if (response.statusCode == 200) {
-    return MovieModel.fromJson(json.decode(response.body));
+    return MovieModel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
   } else {
     throw Exception('Failed to load trailers');
   }
