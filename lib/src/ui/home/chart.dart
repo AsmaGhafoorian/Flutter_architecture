@@ -83,10 +83,15 @@ class _ChartState extends State<Chart>{
                     height: 200,
                     color: Colors.white,
                     margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
                     child : Column(
                         children : [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    Expanded(
+
+                    child : Align(
+                            alignment: FractionalOffset.topCenter,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children : [
                                 Image.network(
                                   snapshot.data.items[index].iconUri,
@@ -94,25 +99,44 @@ class _ChartState extends State<Chart>{
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.more),
+
                                 )
                               ]
                           ),
-
-                          Container(
+                          ),
+                    ),
+                          Expanded(
 
                           child: Align(
-                              alignment: Alignment.bottomCenter,
-                               child: Text(
+                            alignment: FractionalOffset.bottomCenter,
+                              child: Text(
                                     snapshot.data.items[index].profileName,
 
                                     style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.black),
                                     textDirection: TextDirection.rtl,
                                 ),
                                )
-                          )
+                          ),
+
+                          Row(
+                            mainAxisSize: MainAxisSize.max,// width = match_parent
+                            textDirection: TextDirection.rtl,
+                            children: [
+                              Text(
+                              snapshot.data.items[index].point.toString(),
+
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.black
+                              ),
+                            ),
+                            ]
+                          ),
+
                         ]
                     )
                 )
