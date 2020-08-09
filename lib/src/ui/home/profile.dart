@@ -35,69 +35,193 @@ class _ProfileState extends State<Profile>{
     super.dispose();
     widget.bloc.dispose();
   }
-
+  final _formKey = GlobalKey<FormState>();
+  var currentSelectedValue;
+  final _gender = ["male", "female"];
+  bool _isSwitch = false;
   @override
   Widget build(BuildContext context) {
 
-    return(Container(
 
-      child: StreamBuilder(
-          stream:  widget.bloc.allMovies,
-          builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+    return(Material(
+        type: MaterialType.transparency, // remove yellow text underline
 
-            if (snapshot.hasError) print(snapshot.error);
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
 
-            return snapshot.hasData
-                ? moviesList( snapshot)
-                : Center(child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-            ));
-          }
-      ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children :<Widget>[
+                      Text(
+                        'About You',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                            fontSize: 20,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(// for validation and allows to show error with fail validation
+                        validator: (value){
+                          if(value.isEmpty){
+                            return 'Enter your name';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)
+                            ),
+                          hintText: 'Name',
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          )
+                        ),
+                      ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                      child: TextFormField(   // for validation and allows to show error with fail validation
+                        validator: (value){
+                          if(value.isEmpty){
+                            return 'Enter your family';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0)
+                            ),
+                            hintText: 'Family',
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            )
+                        ),
+                      ),
+                  ),
+
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                     child: TextField(
+
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0)
+                              ),
+                              hintText: 'Address',
+                              hintStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize : 12
+                              )
+                          )
+                      ),
+                    ),
+
+                  Container(
+                    child: FormField<String>(
+                      builder: (FormFieldState<String> state) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0))),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: Text("Select One"),
+                              value: currentSelectedValue,
+                              isDense: true,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  currentSelectedValue = newValue;
+                                });
+                                print(currentSelectedValue);
+                              },
+                              items: _gender.map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Travelling for work?',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14
+                        ),
+                      ),
+
+                      Switch(
+                        value: _isSwitch,
+                        activeColor: Colors.blue,
+                        activeTrackColor: Colors.lightBlueAccent,
+                        onChanged: (value){
+                          setState(() {
+                            _isSwitch = value;
+                          });
+                        },
+                      )
+                    ],
+                  ),
+
+
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        ),
+                    color: Colors.red,
+                    onPressed: (){
+
+                      if(_formKey.currentState.validate()){
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'با موفقیت ثبت شد'
+                              ),
+                            )
+                        );
+                      }
+                    },
+                    child: Text(
+                      'confirm',
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                    ),
+                  ),
+
+
+                ],
+              ),
+            ),
+    ),
     )
     );
-
-  }
-
-  Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
-    return Container(
-        height: 200,
-
-        child: ListView.builder(
-          reverse: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.items.length,
-          itemBuilder: (context, index) {
-
-            return GestureDetector(
-
-                child: Container(
-                    width: 200,
-                    color: Colors.white,
-                    margin: EdgeInsets.all(10),
-                    child : Column(
-                        children : [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children : [
-                                Image.network(
-                                  snapshot.data.items[index].iconUri,
-                                  width: 50,
-                                  height : 50,
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.more),
-                                )
-                              ]
-                          )
-                        ]
-                    )
-                )
-            );
-          },
-        )
-    );
-
 
   }
 }
