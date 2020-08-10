@@ -27,11 +27,24 @@ class App extends StatelessWidget {
               // nashode home inject nemishe. banabarin dar myapp niyaz be @provide darim
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.white,
+          accentColor: Colors.grey,
+
+          textTheme: TextTheme(
+              headline6: TextStyle(
+                  color: Colors.purple,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold)
+          )
+      ),
       initialRoute: '/home',
       home: Scaffold(body: home()),
       routes: {
         '/home' : (context) => home()
       },
+      title: 'Flutter Test',
     );
   }
 }

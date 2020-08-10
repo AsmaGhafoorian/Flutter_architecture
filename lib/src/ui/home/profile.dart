@@ -47,7 +47,7 @@ class _ProfileState extends State<Profile>{
         type: MaterialType.transparency, // remove yellow text underline
 
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
 
             child: Form(
               key: _formKey,
@@ -70,6 +70,7 @@ class _ProfileState extends State<Profile>{
                   ),
 
                   Padding(
+
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(// for validation and allows to show error with fail validation
                         validator: (value){
@@ -190,7 +191,10 @@ class _ProfileState extends State<Profile>{
                   ),
 
 
-                  RaisedButton(
+                  SizedBox(
+                    width: double.infinity, // match parent
+                  child: RaisedButton(
+
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                         ),
@@ -208,13 +212,13 @@ class _ProfileState extends State<Profile>{
                       }
                     },
                     child: Text(
-                      'confirm',
+                      'Confirm',
                       style: TextStyle(
                         color: Colors.white
                       ),
                     ),
                   ),
-
+                  )
 
                 ],
               ),

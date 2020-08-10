@@ -1,5 +1,6 @@
 
 
+import 'package:calendar_strip/calendar_strip.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
@@ -40,33 +41,101 @@ class _ChartState extends State<Chart>{
   @override
   Widget build(BuildContext context) {
 
-    return(Container(
+    return(Material(
+        type: MaterialType.transparency, // remove yellow text underline
 
-      child : Column(
-        children: <Widget>[
-          Container(
-            child: StreamBuilder(
-                stream:  widget.bloc.allMovies,
-                builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+        child: Container(
 
-                  if (snapshot.hasError) print(snapshot.error);
+          child : Column(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  children: [
+                    StreamBuilder(
+                      stream:  widget.bloc.allMovies,
+                      builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
-                  return snapshot.hasData
-                      ? moviesList( snapshot)
-                      : Center(child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ));
-                }
-            ),
-          ),
-        ],
+                        if (snapshot.hasError) print(snapshot.error);
 
-    )
-    )
+                        return snapshot.hasData
+                            ? moviesList( snapshot)
+                            : Center(child: CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                        ));
+                      }
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: CalendarStrip(
+
+
+                          iconColor: Colors.black87,
+                          containerDecoration: BoxDecoration(color: Colors.white),
+                          addSwipeGesture: true,
+                          onDateSelected: onSelect,
+                          monthNameWidget: _monthNameWidget,
+                          dateTileBuilder: dateTileBuilder,
+                        )
+                    )
+                  ]
+                ),
+              ),
+            ],
+
+          )
+        )
+      )
     );
 
   }
+  onSelect(data) {
+    print("Selected Date -> $data");
+  }
+  _monthNameWidget(monthName) {
+    return Container(
+      child: Text(
+        monthName,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+      padding: EdgeInsets.only(top: 8, bottom: 4),
+    );
+  }
 
+  dateTileBuilder(date, selectedDate, rowIndex, dayName, isDateMarked, isDateOutOfRange) {
+    bool isSelectedDate = date.compareTo(selectedDate) == 0;
+    Color fontColor = isDateOutOfRange ? Colors.black26 : Colors.grey;
+    TextStyle normalStyle = TextStyle(fontSize: 13, fontWeight: FontWeight.normal, color: fontColor);
+    TextStyle selectedDayNameStyle = TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black);
+    TextStyle selectedDayStyle = TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.red);
+
+    List<Widget> _children = [
+      Text(dayName, style: !isSelectedDate ? normalStyle : selectedDayNameStyle),
+      Text(date.day.toString(),
+          style: !isSelectedDate ? normalStyle : selectedDayStyle),
+    ];
+
+//    if (isDateMarked == true) {
+//      _children.add(getMarkedIndicatorWidget());
+//    }
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 150),
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 5),
+      decoration: BoxDecoration(
+        color: !isSelectedDate ? Colors.transparent : Colors.white70,
+        borderRadius: BorderRadius.all(Radius.circular(60)),
+      ),
+      child: Column(
+        children: _children,
+      ),
+    );
+  }
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
     return Container(
         height: 200,

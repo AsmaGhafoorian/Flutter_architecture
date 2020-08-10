@@ -58,11 +58,8 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
   return(MaterialApp(
-     theme: ThemeData(
-     brightness: Brightness.light,
-     primaryColor: Colors.white,
-     accentColor: Colors.grey,
-     ),
+
+    theme: Theme.of(context),
      color : Colors.grey,
 
      home: Scaffold(

@@ -20,7 +20,7 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
     Future<MovieModel> fetchMovie(http.Client client) async {
       final response = await client.get(
           "https://api-beta.asiatech.ir/api/v1/mobile/club",
-          headers: {HttpHeaders.authorizationHeader: "RJuYQuY83Io15eLxkPnTOK0Ae3gm5Fk6ro8Dksl5ABP7w0jFEPrJvPfLEhblDfEFUmtf035uA6prDJxcKDJGKUQMgog2OlwrHGbqiVvj6Og1YVokR3IKmA09WA7bElnuQFVJdFSCi7t2kRD6IGGMDzHWImkfPGTa08gDvPYS3opFRpKgvtbagkhpfkDlLl1GfepSgI1EOdc2Xh8ImBEjNl4rtXw4iaaSYKio6oDu",
+          headers: {HttpHeaders.authorizationHeader: "eA2vDCfhxsoahFl5tDoFJZJVeSrI6gh6MHIrV7pCYqpdN7GJ0EIBSSLqmAOXAELoCsk1lyhszEv3LBWo2s7sKbUEFoDHsxbZOHhzS8Sw6422Qi5ZYEvtRntEl83VSO8bamI4b",
                     'Content-Type': 'application/json'});
 
 
