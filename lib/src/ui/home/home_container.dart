@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
+import 'package:flutter_test_app/src/bloc/chart_bloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/ui/home/chart.dart';
@@ -16,12 +17,13 @@ import '../../bloc/MovieBloc.dart';
 
 typedef Provider<T> = T Function();
 
-@provide
 class HomeContainer extends StatefulWidget{
   final MoviesBloc bloc;
+  final ChartBloc chartBloc;
   final Provider<Home> home;
 
-  const HomeContainer(this.bloc, this.home);
+  @provide
+  const HomeContainer(this.bloc, this.chartBloc, this.home);
 
   @override
   _Movie createState() => _Movie();
@@ -74,7 +76,7 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
               offstage: _currentIndex != 0,
               child: new TickerMode(
                 enabled: _currentIndex == 0,
-                child: new MaterialApp(home: Chart(widget.bloc)),
+                child: new MaterialApp(home: Chart(widget.bloc, widget.chartBloc)),
               ),
             ),
             new Offstage(

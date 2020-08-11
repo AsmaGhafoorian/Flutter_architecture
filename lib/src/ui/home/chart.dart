@@ -4,19 +4,23 @@ import 'package:calendar_strip/calendar_strip.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
+import 'package:flutter_test_app/src/bloc/chart_bloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
+import 'package:flutter_test_app/src/model/chart_model.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:inject/inject.dart';
 
 import '../../bloc/MovieBloc.dart';
 
 
-@provide
 class Chart extends StatefulWidget{
   final MoviesBloc bloc;
+  final ChartBloc chartBloc;
 
-   Chart(this.bloc);
+  @provide
+  Chart(this.bloc, this.chartBloc);
 
   @override
   _ChartState createState() => _ChartState();
@@ -29,13 +33,14 @@ class _ChartState extends State<Chart>{
   void initState() {
     super.initState();
     widget.bloc.fetchAllMovies();
-
+    widget.chartBloc.getChartData();
   }
 
   @override
   void dispose() {
     super.dispose();
     widget.bloc.dispose();
+    widget.chartBloc.dispose();
   }
 
   @override
@@ -76,6 +81,19 @@ class _ChartState extends State<Chart>{
                           monthNameWidget: _monthNameWidget,
                           dateTileBuilder: dateTileBuilder,
                         )
+                    ),
+                    Container(
+                    child: StreamBuilder(
+                        stream:  widget.chartBloc.chart,
+                        builder: (context, AsyncSnapshot<ChartModel> snapshot) {
+
+                          return snapshot.hasData
+                              ? Chart(snapshot)
+                              : Center(child: CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ));
+                        }
+                    ),
                     )
                   ]
                 ),
@@ -136,6 +154,8 @@ class _ChartState extends State<Chart>{
       ),
     );
   }
+
+
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
     return Container(
         height: 200,
@@ -214,6 +234,63 @@ class _ChartState extends State<Chart>{
         )
     );
 
-
   }
+
+  Widget Chart(AsyncSnapshot<ChartModel> snapshot) {
+    List<chartDataSeries>  data = List<chartDataSeries>();
+    for(var i=0; i <=snapshot.data.scale.values.length-1 ; i++){
+
+      for (var j = 0; j <= snapshot.data.series.length-1 ; j++) {
+      data.add(new chartDataSeries(snapshot.data.scale.values[i], snapshot.data.series[j].values[i]));
+      print(data.toString());
+      }
+    }
+
+    var size = data.length / snapshot.data.series.length;
+    var type1 = List<chartDataSeries>();
+    type1.addAll(data.getRange(0, (size-1).toInt()));
+    var type2 = List<chartDataSeries>();
+    type2.addAll(data.getRange((size+1).toInt(), data.length-1));
+    var seriesList = [
+      new charts.Series<chartDataSeries, String>(
+        id: 'Desktop',
+        domainFn: (chartDataSeries sales, _) => sales.dayName,
+        measureFn: (chartDataSeries sales, _) => sales.dayValue,
+        data: type1,
+      ),
+      new charts.Series<chartDataSeries, String>(
+        id: 'Tablet',
+        domainFn: (chartDataSeries sales, _) => sales.dayName,
+        measureFn: (chartDataSeries sales, _) => sales.dayValue,
+        data: type2,
+      )
+    ];
+
+    return new charts.BarChart(
+      seriesList,
+      animate: true,
+      barGroupingType: charts.BarGroupingType.grouped,
+    );
+  }
+//    var chart = charts.<ChartModel>(
+//      series,
+//      animate: true,
+//    );
+//    var chartWidget = new Padding(
+//      padding: new EdgeInsets.all(32.0),
+//      child: new SizedBox(
+//        height: 200.0,
+//        child: chart,
+//      ),
+//    );
+
+
+}
+
+class chartDataSeries{
+  final String dayName;
+  final int dayValue;
+
+  chartDataSeries(this.dayName, this.dayValue);
+
 }

@@ -27,6 +27,8 @@ dependencies:
   rxdart: ^0.18.0
   http: ^0.12.2
   json_annotation: ^3.0.0
+  charts_flutter: ^0.8.1
+
   inject:
     path: ./injection/inject.dart/package/inject
 
