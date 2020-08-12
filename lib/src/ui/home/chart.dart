@@ -11,6 +11,7 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:inject/inject.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../bloc/MovieBloc.dart';
 
@@ -63,9 +64,7 @@ class _ChartState extends State<Chart>{
 
                         return snapshot.hasData
                             ? moviesList( snapshot)
-                            : Center(child: CircularProgressIndicator(
-                          valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-                        ));
+                            : Container();
                       }
                     ),
                     Container(
@@ -90,10 +89,9 @@ class _ChartState extends State<Chart>{
                         builder: (context, AsyncSnapshot<ChartModel> snapshot) {
 
                           return snapshot.hasData
-                              ? Chart(snapshot)
-                              : Center(child: CircularProgressIndicator(
-                            valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-                          ));
+                              ? Chart( snapshot)
+                              : Container();
+
                         }
                     ),
                       )
@@ -108,6 +106,18 @@ class _ChartState extends State<Chart>{
       )
     );
 
+  }
+
+ Widget showProgressBar(){
+   return Positioned(
+     child: Container(
+       child: Center(
+         child: CircularProgressIndicator(
+           valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+         ),
+       ),
+       color: Colors.white.withOpacity(0.8),
+   ));
   }
   onSelect(data) {
     print("Selected Date -> $data");
