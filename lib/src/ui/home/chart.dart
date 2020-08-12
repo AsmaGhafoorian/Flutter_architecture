@@ -48,7 +48,6 @@ class _ChartState extends State<Chart>{
 
     return(Material(
         type: MaterialType.transparency, // remove yellow text underline
-
         child: Container(
 
           child : Column(
@@ -83,6 +82,9 @@ class _ChartState extends State<Chart>{
                         )
                     ),
                     Container(
+                      child: SizedBox(
+                        width: 300,
+                    height: 200,
                     child: StreamBuilder(
                         stream:  widget.chartBloc.chart,
                         builder: (context, AsyncSnapshot<ChartModel> snapshot) {
@@ -94,6 +96,7 @@ class _ChartState extends State<Chart>{
                           ));
                         }
                     ),
+                      )
                     )
                   ]
                 ),
@@ -237,34 +240,26 @@ class _ChartState extends State<Chart>{
   }
 
   Widget Chart(AsyncSnapshot<ChartModel> snapshot) {
-    List<chartDataSeries>  data = List<chartDataSeries>();
-    for(var i=0; i <=snapshot.data.scale.values.length-1 ; i++){
+    var seriesList = List<charts.Series<chartDataSeries, String>>();
 
-      for (var j = 0; j <= snapshot.data.series.length-1 ; j++) {
-      data.add(new chartDataSeries(snapshot.data.scale.values[i], snapshot.data.series[j].values[i]));
-      print(data.toString());
+    var series = snapshot.data.series;
+    var scaleX = snapshot.data.scale;
+    var colors = [Colors.blue, Colors.yellow];
+      for (var index=0;index<= series.length-1; index++) {
+        List<chartDataSeries>  data = List<chartDataSeries>();
+        for(var i=0; i<= series[index].values.length-1; i++){
+
+            data.add(new chartDataSeries(scaleX.values[i], series[index].values[i]));
+            print(data.toString());
       }
+        seriesList.add(charts.Series<chartDataSeries, String>(
+            id: series[index].text,
+            domainFn: (chartDataSeries sales, _) => sales.dayName,
+            measureFn: (chartDataSeries sales, _) => sales.dayValue,
+            data: data,
+            seriesColor: charts.ColorUtil.fromDartColor(colors[index])
+        ));
     }
-
-    var size = data.length / snapshot.data.series.length;
-    var type1 = List<chartDataSeries>();
-    type1.addAll(data.getRange(0, (size-1).toInt()));
-    var type2 = List<chartDataSeries>();
-    type2.addAll(data.getRange((size+1).toInt(), data.length-1));
-    var seriesList = [
-      new charts.Series<chartDataSeries, String>(
-        id: 'Desktop',
-        domainFn: (chartDataSeries sales, _) => sales.dayName,
-        measureFn: (chartDataSeries sales, _) => sales.dayValue,
-        data: type1,
-      ),
-      new charts.Series<chartDataSeries, String>(
-        id: 'Tablet',
-        domainFn: (chartDataSeries sales, _) => sales.dayName,
-        measureFn: (chartDataSeries sales, _) => sales.dayValue,
-        data: type2,
-      )
-    ];
 
     return new charts.BarChart(
       seriesList,
@@ -272,18 +267,6 @@ class _ChartState extends State<Chart>{
       barGroupingType: charts.BarGroupingType.grouped,
     );
   }
-//    var chart = charts.<ChartModel>(
-//      series,
-//      animate: true,
-//    );
-//    var chartWidget = new Padding(
-//      padding: new EdgeInsets.all(32.0),
-//      child: new SizedBox(
-//        height: 200.0,
-//        child: chart,
-//      ),
-//    );
-
 
 }
 
@@ -293,4 +276,10 @@ class chartDataSeries{
 
   chartDataSeries(this.dayName, this.dayValue);
 
+}
+class OrdinalSales {
+  final String year;
+  final int sales;
+
+  OrdinalSales(this.year, this.sales);
 }

@@ -45,7 +45,7 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
     @singleton
     Future<ChartModel> fetchChartData(http.Client client) async{
 
-          final response = await client.get("https://esb-test.asiatech.ir/api/vDev/test/graph/data");
+          final response = await client.get("https://api-test.asiatech.ir/api/vDev/test/graph/data");
           if(response.statusCode == 200)
             return compute(parsChartData, response.bodyBytes);
           else
