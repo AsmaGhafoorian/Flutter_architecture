@@ -28,6 +28,7 @@ dependencies:
   http: ^0.12.2
   json_annotation: ^3.0.0
   charts_flutter: ^0.8.1
+  progress_dialog: ^1.2.4
 
   inject:
     path: ./injection/inject.dart/package/inject

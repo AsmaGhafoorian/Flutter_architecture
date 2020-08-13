@@ -11,6 +11,7 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:inject/inject.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../bloc/MovieBloc.dart';
@@ -44,14 +45,17 @@ class _ChartState extends State<Chart>{
     widget.chartBloc.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
 
+    ProgressDialog pr;
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
     return(Material(
-        type: MaterialType.transparency, // remove yellow text underline
-        child: Container(
+        type: MaterialType.transparency,
 
-          child : Column(
+          child : ListView(
             children: <Widget>[
               Container(
                 child: Column(
@@ -62,9 +66,13 @@ class _ChartState extends State<Chart>{
 
                         if (snapshot.hasError) print(snapshot.error);
 
-                        return snapshot.hasData
-                            ? moviesList( snapshot)
-                            : Container();
+                        if(snapshot.hasData) {
+//                          setState(() {
+//                            _load = false;
+//                          });
+                          return moviesList(snapshot);
+                        }
+                        else return Container();
                       }
                     ),
                     Container(
@@ -95,31 +103,29 @@ class _ChartState extends State<Chart>{
                         }
                     ),
                       )
-                    )
+                    ),
                   ]
                 ),
               ),
             ],
-
           )
         )
-      )
     );
 
   }
 
- Widget showProgressBar(){
-   return Positioned(
-     child: Container(
-       child: Center(
-         child: CircularProgressIndicator(
-           valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-         ),
-       ),
-       color: Colors.white.withOpacity(0.8),
-   ));
-  }
+ Widget showProgressBar() => Center(
+     child: CircularProgressIndicator(
+       backgroundColor: Colors.red,
+     ),
+   );
+
+
   onSelect(data) {
+    setState(() {
+      widget.chartBloc.getChartData();
+
+    });
     print("Selected Date -> $data");
   }
   _monthNameWidget(monthName) {
@@ -168,7 +174,6 @@ class _ChartState extends State<Chart>{
     );
   }
 
-
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
     return Container(
         height: 200,
@@ -177,7 +182,6 @@ class _ChartState extends State<Chart>{
           scrollDirection: Axis.horizontal,
           itemCount: snapshot.data.items.length,
           itemBuilder: (context, index) {
-
             return GestureDetector(
 
                 child: Container(
