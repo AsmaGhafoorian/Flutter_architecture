@@ -13,9 +13,7 @@ import '../../bloc/MovieBloc.dart';
 
 @provide
 class Profile extends StatefulWidget{
-  final MoviesBloc bloc;
 
-  Profile(this.bloc);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -26,15 +24,10 @@ class _ProfileState extends State<Profile>{
 
   @override
   void initState() {
-    widget.bloc.fetchAllMovies();
-
+    super.initState();
+    print("PROOOOFIIILLLLLEEEEE");
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    widget.bloc.dispose();
-  }
   final _formKey = GlobalKey<FormState>();
   var currentSelectedValue;
   final _gender = ["male", "female"];

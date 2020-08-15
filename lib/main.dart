@@ -39,7 +39,6 @@ class App extends StatelessWidget {
                   fontWeight: FontWeight.bold)
           )
       ),
-      initialRoute: '/home',
       home: Scaffold(body: home()),
       routes: {
         '/home' : (context) => home()

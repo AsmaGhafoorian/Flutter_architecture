@@ -10,6 +10,7 @@ import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/ui/home/chart.dart';
 import 'package:flutter_test_app/src/ui/home/home.dart';
 import 'package:flutter_test_app/src/ui/home/profile.dart';
+import 'package:flutter_test_app/src/ui/home/setting.dart';
 
 import 'package:inject/inject.dart';
 
@@ -18,12 +19,11 @@ import '../../bloc/MovieBloc.dart';
 typedef Provider<T> = T Function();
 
 class HomeContainer extends StatefulWidget{
-  final MoviesBloc bloc;
-  final ChartBloc chartBloc;
   final Provider<Home> home;
+  final Provider<Chart> chart;
 
   @provide
-  const HomeContainer(this.bloc, this.chartBloc, this.home);
+  const HomeContainer( this.home, this.chart): super();
 
   @override
   _Movie createState() => _Movie();
@@ -32,31 +32,71 @@ class HomeContainer extends StatefulWidget{
 
 class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
   int _currentIndex = 0;
-//  @override
-//  Future<bool> didPopRoute()  {
-//    if(_currentIndex != 0){
-//       Navigator.of(context).pop(false);
-//    }else {
-//      Navigator.of(context).pop(true);
-//    }
-//}
+  @override
+  Future<bool> didPopRoute()  {
+
+    return _currentIndex==0 ?showDialog(
+      context: context,
+      child: new AlertDialog(
+        title: new Text('Do you want to exit this application?'),
+        content: new Text('We hate to see you leave...'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    ) :
+    {
+      setState(() {
+        _currentIndex = 0;
+      })
+    };
+    }
+
 
   @override
   void initState() {
     super.initState();
-    widget.bloc.fetchAllMovies();
     WidgetsBinding.instance.addObserver(this);
 
   }
 
   @override
   void dispose() {
-    widget.bloc.dispose();
     WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
 
+  Widget dynamicBody() {
+
+      return new Stack(
+          children: <Widget>[
+          new Offstage(
+          offstage: _currentIndex != 0,
+          child:  widget.chart(),
+          ),
+          new Offstage(
+          offstage: _currentIndex != 1,
+          child:  widget.home(),
+          ),
+          new Offstage(
+          offstage: _currentIndex != 2,
+          child:  Profile(),
+          ),
+          new Offstage(
+          offstage: _currentIndex != 3,
+          child:  Setting(),
+          ),
+          ]);
+
+  }
   @override
   Widget build(BuildContext context) {
   return(MaterialApp(
@@ -70,35 +110,11 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
           centerTitle: true,
         ),
 
-        body: Stack(
-          children: <Widget>[
-            new Offstage(
-              offstage: _currentIndex != 0,
-              child: new TickerMode(
-                enabled: _currentIndex == 0,
-                child: new MaterialApp(home: Chart(widget.bloc, widget.chartBloc)),
-              ),
-            ),
-            new Offstage(
-              offstage: _currentIndex != 1,
-              child: new TickerMode(
-                enabled: _currentIndex == 1,
-                child: new MaterialApp(home: widget.home()),
-              ),
-            ),
-            new Offstage(
-              offstage: _currentIndex != 2,
-              child: new TickerMode(
-                enabled: _currentIndex == 2,
-                child: new MaterialApp(home:  Profile(widget.bloc)),
-              ),
-            ),
-          ],
-        ),
+        body: dynamicBody(),
 
        bottomNavigationBar: BottomNavigationBar(
          type: BottomNavigationBarType.fixed,
-         items: const <BottomNavigationBarItem>[
+         items:[
            BottomNavigationBarItem(
              icon: Icon(Icons.insert_chart),
              title: Text(''),
@@ -129,72 +145,11 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
    );
   }
 
-  Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
-    return Container(
-        height: 200,
-
-        child: ListView.builder(
-          reverse: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.items.length,
-          itemBuilder: (context, index) {
-
-            return GestureDetector(
-                onTap: () => openDetailPage(snapshot.data, index),
-
-                child: Container(
-                width: 200,
-                color: Colors.white,
-                margin: EdgeInsets.all(10),
-                child : Column(
-                children : [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children : [
-                        Image.network(
-                        snapshot.data.items[index].iconUri,
-                        width: 50,
-                        height : 50,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.more),
-                        )
-                    ]
-                  )
-                  ]
-                )
-            )
-            );
-          },
-        )
-    );
-
-
-  }
 
     void _onItemTapped(int index){
         setState(() {
           _currentIndex = index;
         });
     }
-
-  openDetailPage(MovieModel data, int index) {
-    final page = MovieDetailBlocProvider(
-//      child: MovieDetail(
-//        title: data.results[index].title,
-//        posterUrl: data.results[index].backdrop_path,
-//        description: data.results[index].overview,
-//        releaseDate: data.results[index].release_date,
-//        voteAverage: data.results[index].vote_average.toString(),
-//        movieId: data.results[index].id,
-//      ),
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return page;
-      }),
-    );
-  }
 
 }

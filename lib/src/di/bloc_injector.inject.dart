@@ -8,6 +8,7 @@ import 'dart:async' as _i7;
 import '../../main.dart' as _i8;
 import '../ui/home/home_container.dart' as _i9;
 import '../ui/home/home.dart' as _i10;
+import '../ui/home/chart.dart' as _i11;
 
 class BlocInjector$Injector implements _i1.BlocInjector {
   BlocInjector$Injector._(this._blocModule);
@@ -30,7 +31,7 @@ class BlocInjector$Injector implements _i1.BlocInjector {
 
   _i8.App _createApp() => _i8.App(_createHomeContainer);
   _i9.HomeContainer _createHomeContainer() =>
-      _i9.HomeContainer(_createMoviesBloc(), _createChartBloc(), _createHome);
+      _i9.HomeContainer( _createHome, _createChart);
   _i5.MoviesBloc _createMoviesBloc() =>
       _singletonMoviesBloc ??= _blocModule.movieBloc(_createRepository());
   _i4.Repository _createRepository() =>
@@ -39,6 +40,8 @@ class BlocInjector$Injector implements _i1.BlocInjector {
   _i6.ChartBloc _createChartBloc() =>
       _singletonChartBloc ??= _blocModule.chartBloc(_createRepository());
   _i10.Home _createHome() => _i10.Home(_createMoviesBloc());
+  _i11.Chart _createChart() => _i11.Chart(_createMoviesBloc(), _createChartBloc());
+
   @override
   _i8.App get app => _createApp();
   @override

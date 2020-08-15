@@ -34,16 +34,17 @@ class _ChartState extends State<Chart>{
   @override
   void initState() {
     super.initState();
+    print("CHAAAAAAAAAAAAAAAARRRTTTT");
     widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    widget.bloc.dispose();
-    widget.chartBloc.dispose();
-  }
+//  @override
+//  void dispose() {
+//    super.dispose();
+//    widget.bloc.dispose();
+//    widget.chartBloc.dispose();
+//  }
 
 
   @override
@@ -57,8 +58,7 @@ class _ChartState extends State<Chart>{
 
           child : ListView(
             children: <Widget>[
-              Container(
-                child: Column(
+                Column(
                   children: [
                     StreamBuilder(
                       stream:  widget.bloc.allMovies,
@@ -106,10 +106,10 @@ class _ChartState extends State<Chart>{
                     ),
                   ]
                 ),
-              ),
+
             ],
           )
-        )
+    )
     );
 
   }

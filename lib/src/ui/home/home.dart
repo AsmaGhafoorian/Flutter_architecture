@@ -17,14 +17,16 @@ class Home extends StatefulWidget{
 
   Home(this.bloc);
   @override
-  _Movie createState() => _Movie();
+  _HomeState createState() => _HomeState();
 
 }
 
-class _Movie extends State<Home>{
+class _HomeState extends State<Home>{
 
   @override
   void initState() {
+    print("HOOOOOOOOOOOOOOOOOMMMMMMMM");
+    super.initState();
     widget.bloc.fetchAllMovies();
 
   }
