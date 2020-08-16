@@ -1,8 +1,11 @@
 
 
+import 'dart:async';
+
 import 'package:calendar_strip/calendar_strip.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/chart_bloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
@@ -35,24 +38,38 @@ class _ChartState extends State<Chart>{
   void initState() {
     super.initState();
     print("CHAAAAAAAAAAAAAAAARRRTTTT");
+    Timer.run(() => showLoaderDialog(context));
     widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
   }
 
-//  @override
-//  void dispose() {
-//    super.dispose();
-//    widget.bloc.dispose();
-//    widget.chartBloc.dispose();
-//  }
+  @override
+  void dispose() {
+    super.dispose();
+    widget.bloc.dispose();
+    widget.chartBloc.dispose();
+  }
 
+
+  showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    ProgressDialog pr;
-    pr = new ProgressDialog(context, showLogs: true);
-    pr.style(message: 'Please wait...');
     return(Material(
         type: MaterialType.transparency,
 
@@ -62,15 +79,17 @@ class _ChartState extends State<Chart>{
                   children: [
                     StreamBuilder(
                       stream:  widget.bloc.allMovies,
+                      
                       builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
                         if (snapshot.hasError) print(snapshot.error);
 
                         if(snapshot.hasData) {
-//                          setState(() {
-//                            _load = false;
-//                          });
+//                          Navigator.of(context, rootNavigator: true).pop('dialog');
+                          Navigator.of(context).pop();
+
                           return moviesList(snapshot);
+//
                         }
                         else return Container();
                       }
@@ -97,7 +116,7 @@ class _ChartState extends State<Chart>{
                         builder: (context, AsyncSnapshot<ChartModel> snapshot) {
 
                           return snapshot.hasData
-                              ? Chart( snapshot)
+                              ? barChart( snapshot)
                               : Container();
 
                         }
@@ -155,11 +174,6 @@ class _ChartState extends State<Chart>{
       Text(date.day.toString(),
           style: !isSelectedDate ? normalStyle : selectedDayStyle),
     ];
-
-//    if (isDateMarked == true) {
-//      _children.add(getMarkedIndicatorWidget());
-//    }
-
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
       alignment: Alignment.center,
@@ -175,6 +189,7 @@ class _ChartState extends State<Chart>{
   }
 
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
+
     return Container(
         height: 200,
         child: ListView.builder(
@@ -247,13 +262,14 @@ class _ChartState extends State<Chart>{
                     )
                 )
             );
+
           },
         )
     );
 
   }
 
-  Widget Chart(AsyncSnapshot<ChartModel> snapshot) {
+  Widget barChart(AsyncSnapshot<ChartModel> snapshot) {
     var seriesList = List<charts.Series<chartDataSeries, String>>();
 
     var series = snapshot.data.series;

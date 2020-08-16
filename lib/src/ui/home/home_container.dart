@@ -32,33 +32,6 @@ class HomeContainer extends StatefulWidget{
 
 class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
   int _currentIndex = 0;
-  @override
-  Future<bool> didPopRoute()  {
-
-    return _currentIndex==0 ?showDialog(
-      context: context,
-      child: new AlertDialog(
-        title: new Text('Do you want to exit this application?'),
-        content: new Text('We hate to see you leave...'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('No'),
-          ),
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    ) :
-    {
-      setState(() {
-        _currentIndex = 0;
-      })
-    };
-    }
-
 
   @override
   void initState() {
@@ -74,29 +47,7 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
     super.dispose();
   }
 
-  Widget dynamicBody() {
 
-      return new Stack(
-          children: <Widget>[
-          new Offstage(
-          offstage: _currentIndex != 0,
-          child:  widget.chart(),
-          ),
-          new Offstage(
-          offstage: _currentIndex != 1,
-          child:  widget.home(),
-          ),
-          new Offstage(
-          offstage: _currentIndex != 2,
-          child:  Profile(),
-          ),
-          new Offstage(
-          offstage: _currentIndex != 3,
-          child:  Setting(),
-          ),
-          ]);
-
-  }
   @override
   Widget build(BuildContext context) {
   return(MaterialApp(
@@ -110,7 +61,8 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
           centerTitle: true,
         ),
 
-        body: dynamicBody(),
+       body: dynamicBody(),// or body: dynamicBody
+
 
        bottomNavigationBar: BottomNavigationBar(
          type: BottomNavigationBarType.fixed,
@@ -146,10 +98,70 @@ class _Movie extends State<HomeContainer> with WidgetsBindingObserver{
   }
 
 
+  Widget dynamicBody() {
+
+    return new Stack(
+        children: <Widget>[
+          new Offstage(
+            offstage: _currentIndex != 0,
+            child:  widget.chart(),
+          ),
+          new Offstage(
+            offstage: _currentIndex != 1,
+            child:  widget.home(),
+          ),
+          new Offstage(
+            offstage: _currentIndex != 2,
+            child:  Profile(),
+          ),
+          new Offstage(
+            offstage: _currentIndex != 3,
+            child:  Setting(),
+          ),
+        ]
+    );
+  }
+
+  Widget bottomDynamicBody() {
+    SafeArea( // or body: dynamicBody
+      top: false,
+      child: IndexedStack(
+          index: _currentIndex,
+          children: [widget.chart(), widget.home(), Profile(), Setting()]
+      ),
+    );
+  }
+
+  @override
+  Future<bool> didPopRoute()  {
+
+    return _currentIndex==0 ?showDialog(
+      context: context,
+      child: new AlertDialog(
+        title: new Text('Do you want to exit this application?'),
+        content: new Text('We hate to see you leave...'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    ) :
+    {
+      setState(() {
+        _currentIndex = 0;
+      })
+    };
+  }
+
     void _onItemTapped(int index){
         setState(() {
           _currentIndex = index;
         });
     }
-
 }
