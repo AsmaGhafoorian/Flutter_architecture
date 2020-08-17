@@ -33,6 +33,7 @@ class Chart extends StatefulWidget{
 }
 
 class _ChartState extends State<Chart>{
+  ProgressDialog pr;
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _ChartState extends State<Chart>{
     Timer.run(() => showLoaderDialog(context));
     widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
+
   }
 
   @override
@@ -69,7 +71,9 @@ class _ChartState extends State<Chart>{
 
   @override
   Widget build(BuildContext context) {
-
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
+//    pr.show();
     return(Material(
         type: MaterialType.transparency,
 
@@ -82,16 +86,23 @@ class _ChartState extends State<Chart>{
                       
                       builder: (context, AsyncSnapshot<MovieModel> snapshot) {
 
-                        if (snapshot.hasError) print(snapshot.error);
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                          case ConnectionState.waiting:
 
-                        if(snapshot.hasData) {
-//                          Navigator.of(context, rootNavigator: true).pop('dialog');
-                          Navigator.of(context).pop();
+                          return new Container();
+                          default:
+                            if (snapshot.hasError)
+                            {
+                              return new Center(child: Text('Some warning'));
+                            }
+                            else {
+                              if(snapshot.hasData){
 
-                          return moviesList(snapshot);
-//
+                              }
+                              return moviesList(snapshot);
+                            }
                         }
-                        else return Container();
                       }
                     ),
                     Container(
@@ -189,6 +200,10 @@ class _ChartState extends State<Chart>{
   }
 
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+    });
+
 
     return Container(
         height: 200,
