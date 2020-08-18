@@ -12,13 +12,13 @@ import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/chart_model.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_test_app/src/utils/custom_progress_dialog.dart';
 
 import 'package:inject/inject.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:rxdart/rxdart.dart';
+//import 'package:progress_dialog/progress_dialog.dart';
 
 import '../../bloc/MovieBloc.dart';
-
+//import 'package:custom_progress_dialog/custom_progress_dialog.dart';
 
 class Chart extends StatefulWidget{
   final MoviesBloc bloc;
@@ -33,15 +33,18 @@ class Chart extends StatefulWidget{
 }
 
 class _ChartState extends State<Chart>{
-  ProgressDialog pr;
+
+  ProgressDialog _progressDialog = ProgressDialog();
 
   @override
   void initState() {
     super.initState();
     print("CHAAAAAAAAAAAAAAAARRRTTTT");
-    Timer.run(() => showLoaderDialog(context));
+//    Timer.run(() => showLoaderDialog(context));
     widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
+
+    _progressDialog.showProgressDialog(context,textToBeDisplayed: '');
 
   }
 
@@ -52,27 +55,8 @@ class _ChartState extends State<Chart>{
     widget.chartBloc.dispose();
   }
 
-
-  showLoaderDialog(BuildContext context){
-    AlertDialog alert=AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
-        ],),
-    );
-    showDialog(barrierDismissible: false,
-      context:context,
-      builder:(BuildContext context){
-        return alert;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    pr = new ProgressDialog(context, showLogs: true);
-    pr.style(message: 'Please wait...');
 //    pr.show();
     return(Material(
         type: MaterialType.transparency,
@@ -92,16 +76,20 @@ class _ChartState extends State<Chart>{
 
                           return new Container();
                           default:
+
+
                             if (snapshot.hasError)
                             {
                               return new Center(child: Text('Some warning'));
                             }
-                            else {
-                              if(snapshot.hasData){
 
-                              }
-                              return moviesList(snapshot);
+                              if(snapshot.hasData) {
+                                return moviesList(snapshot);
+
                             }
+                            _progressDialog.dismissProgressDialog(context);
+
+                              return null;
                         }
                       }
                     ),
@@ -200,9 +188,9 @@ class _ChartState extends State<Chart>{
   }
 
   Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context, rootNavigator: true).pop('dialog');
-    });
+//    WidgetsBinding.instance.addPostFrameCallback((_) {
+//      Navigator.of(context, rootNavigator: true).pop('dialog');
+//    });
 
 
     return Container(
