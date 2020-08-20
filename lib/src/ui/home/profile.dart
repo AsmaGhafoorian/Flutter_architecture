@@ -305,23 +305,30 @@ class _ProfileState extends State<Profile>{
                     child: ListView(
 
                         children: _radioChaices.map((data) {
-                          return Row(
-                              children : [
-                                Radio(
-                                  activeColor: Colors.blue,
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
 
-                                  groupValue: _defaultIndex,
-                                  value: data.index,
-                                  onChanged: (value) {
-                                    print(value.toString());
-                                    setState(() {
-                                      _defaultChoice = _radioChaices[value].choice;
-                                      _defaultIndex = value;
-                                    });
-                                  },
-                                ),
-                                Text(data.cost)
-                              ]
+                            child: Row(
+                                children : [
+                                  Radio(
+                                    activeColor: Colors.blue,
+
+                                    groupValue: _defaultIndex,
+                                    value: data.index,
+                                    onChanged: (value) {
+                                      print(value.toString());
+                                      setState(() {
+                                        _defaultChoice = _radioChaices[value].choice;
+                                        _defaultIndex = value;
+                                      });
+                                    },
+                                  ),
+                                  Text(data.choice, textAlign: TextAlign.left,),
+                                  Expanded(
+                                  child: Text(data.cost, textAlign: TextAlign.right,)
+                                  )
+                                ]
+                            ),
                           );
                         }).toList()
                     ),
