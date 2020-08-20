@@ -7,6 +7,14 @@ import 'package:flutter/material.dart';
     return TextStyle(
         fontFamily: 'Montserrat',
         fontWeight: FontWeight.normal,
+        fontSize: 15);
+  }
+
+  TextStyle TextTheme2() {
+    return TextStyle(
+        color: Colors.grey,
+        fontFamily: 'Montserrat',
+        fontWeight: FontWeight.normal,
         fontSize: 14);
   }
 }
