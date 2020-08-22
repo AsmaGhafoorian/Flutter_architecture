@@ -251,7 +251,8 @@ class _ProfileState extends State<Profile>{
                   Container(
                     height: 200,
                   child: ListView(
-
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
                     children: _radioChaices.map((data) {
                       return
                             RadioListTile(
@@ -303,7 +304,8 @@ class _ProfileState extends State<Profile>{
                   Container(
                     height: 200,
                     child: ListView(
-
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
                         children: _radioChaices.map((data) {
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -343,7 +345,8 @@ class _ProfileState extends State<Profile>{
                   Container(
                     height: 200,
                     child: ListView(
-
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
                         children: _checkBoxValues.keys.map((String key) {
                           return new CheckboxListTile(
                             activeColor: Colors.blue,
