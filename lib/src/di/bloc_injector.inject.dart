@@ -40,7 +40,7 @@ class BlocInjector$Injector implements _i1.BlocInjector {
   _i6.ChartBloc _createChartBloc() =>
       _singletonChartBloc ??= _blocModule.chartBloc(_createRepository());
   _i10.Home _createHome() => _i10.Home(_createMoviesBloc());
-  _i11.Chart _createChart() => _i11.Chart(_createMoviesBloc(), _createChartBloc());
+  _i11.Chart _createChart() => _i11.Chart( _createChartBloc());
 
   @override
   _i8.App get app => _createApp();

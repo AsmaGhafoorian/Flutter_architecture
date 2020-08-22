@@ -16,7 +16,7 @@ class Repository{
   @provide
   Repository(this.client);
 
-  Future<MovieModel> getAllMovie() => fetchMovie(client);
+  Future<dynamic> getAllMovie() => fetchMovie(client);
   Future<MovieModel> fetchTrailers(int movieId) => fetchTrailer(movieId);
   Future<ChartModel> getChartData() => fetchChartData(client);
 }

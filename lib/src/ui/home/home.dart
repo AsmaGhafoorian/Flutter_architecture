@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
+import 'package:flutter_test_app/src/network/api_response.dart';
 
 import 'package:inject/inject.dart';
 
@@ -42,32 +43,40 @@ class _HomeState extends State<Home>{
 
     return(Container(
 
-        child: StreamBuilder(
+        child: StreamBuilder<ApiResponse<MovieModel>>(
             stream:  widget.bloc.allMovies,
-            builder: (context, AsyncSnapshot<MovieModel> snapshot) {
-
-              if (snapshot.hasError) print(snapshot.error);
-
-              return snapshot.hasData
-                  ? moviesList( snapshot)
-                  : Center(child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
-              ));
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                  switch (snapshot.data.status) {
+                    case Status.LOADING:
+                      return Container();
+                      break;
+                    case Status.COMPLETED:
+                      return moviesList(snapshot.data.data);
+                      break;
+                    case Status.ERROR:
+                      return Error(
+                        errorMessage: snapshot.data.message,
+                        onRetryPressed: () => widget.bloc.fetchAllMovies(),
+                      );
+                }
+              }
+              return Container();
             }
-        ),
+
+    )
     )
     );
-
   }
 
-  Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
+  Widget moviesList(MovieModel snapshot) {
     return Container(
         height: 200,
 
         child: ListView.builder(
           reverse: true,
           scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.items.length,
+          itemCount: snapshot.items.length,
           itemBuilder: (context, index) {
 
             return GestureDetector(
@@ -82,7 +91,7 @@ class _HomeState extends State<Home>{
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children : [
                                 Image.network(
-                                  snapshot.data.items[index].iconUri,
+                                  snapshot.items[index].iconUri,
                                   width: 50,
                                   height : 50,
                                 ),
@@ -100,5 +109,39 @@ class _HomeState extends State<Home>{
     );
 
 
+  }
+}
+
+class Error extends StatelessWidget {
+  final String errorMessage;
+
+  final Function onRetryPressed;
+
+  const Error({Key key, this.errorMessage, this.onRetryPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            errorMessage,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.lightGreen,
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(height: 8),
+          RaisedButton(
+            color: Colors.lightGreen,
+            child: Text('Retry', style: TextStyle(color: Colors.white)),
+            onPressed: onRetryPressed,
+          )
+        ],
+      ),
+    );
   }
 }

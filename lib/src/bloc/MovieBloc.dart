@@ -1,6 +1,9 @@
 
 
+import 'dart:async';
+
 import 'package:flutter_test_app/src/model/movie_model.dart';
+import 'package:flutter_test_app/src/network/api_response.dart';
 import 'package:flutter_test_app/src/network/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:inject/inject.dart';
@@ -8,18 +11,23 @@ import 'package:inject/inject.dart';
 @provide
 class MoviesBloc {
   final Repository _repository ;
-  final _moviesFetcher = PublishSubject<MovieModel>();
+  StreamSink<ApiResponse<MovieModel>> get _moviesFetcher => _movieListController.sink;
+  StreamController _movieListController= StreamController<ApiResponse<MovieModel>>();
 
-  Stream<MovieModel> get allMovies => _moviesFetcher.stream;
+  Stream<ApiResponse<MovieModel>> get allMovies => _movieListController.stream;
   MoviesBloc(this._repository);
 
   fetchAllMovies() async {
-    MovieModel itemModel = await _repository.getAllMovie();
-    _moviesFetcher.sink.add(itemModel);
+    try {
+      MovieModel itemModel = await _repository.getAllMovie();
+      _moviesFetcher.add(ApiResponse.completed(itemModel));
+    }catch(e){
+      _moviesFetcher.add(ApiResponse.error(e.toString()));
+    }
   }
 
   dispose() {
-    _moviesFetcher.close();
+    _movieListController.close();
   }
 }
 

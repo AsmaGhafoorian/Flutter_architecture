@@ -29,5 +29,5 @@ class BlocModule{
 
   @provide
   @singleton
-  Chart chart(MoviesBloc movieBloc, ChartBloc chartBloc) => Chart(movieBloc, chartBloc);
+  Chart chart(MoviesBloc movieBloc, ChartBloc chartBloc) => Chart(chartBloc);
 }

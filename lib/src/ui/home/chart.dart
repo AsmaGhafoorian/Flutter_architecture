@@ -21,11 +21,11 @@ import '../../bloc/MovieBloc.dart';
 //import 'package:custom_progress_dialog/custom_progress_dialog.dart';
 
 class Chart extends StatefulWidget{
-  final MoviesBloc bloc;
+//  final MoviesBloc bloc;
   final ChartBloc chartBloc;
 
   @provide
-  Chart(this.bloc, this.chartBloc);
+  Chart( this.chartBloc);
 
   @override
   _ChartState createState() => _ChartState();
@@ -41,7 +41,7 @@ class _ChartState extends State<Chart>{
     super.initState();
     print("CHAAAAAAAAAAAAAAAARRRTTTT");
 //    Timer.run(() => showLoaderDialog(context));
-    widget.bloc.fetchAllMovies();
+//    widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
 
     _progressDialog.showProgressDialog(context,textToBeDisplayed: '');
@@ -51,7 +51,7 @@ class _ChartState extends State<Chart>{
   @override
   void dispose() {
     super.dispose();
-    widget.bloc.dispose();
+//    widget.bloc.dispose();
     widget.chartBloc.dispose();
   }
 
@@ -65,34 +65,34 @@ class _ChartState extends State<Chart>{
             children: <Widget>[
                 Column(
                   children: [
-                    StreamBuilder(
-                      stream:  widget.bloc.allMovies,
-                      
-                      builder: (context, AsyncSnapshot<MovieModel> snapshot) {
-
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                          case ConnectionState.waiting:
-
-                          return new Container();
-                          default:
-
-
-                            if (snapshot.hasError)
-                            {
-                              return new Center(child: Text('Some warning'));
-                            }
-
-                              if(snapshot.hasData) {
-                                return moviesList(snapshot);
-
-                            }
-                            _progressDialog.dismissProgressDialog(context);
-
-                              return null;
-                        }
-                      }
-                    ),
+//                    StreamBuilder(
+//                      stream:  widget.bloc.allMovies,
+//
+//                      builder: (context, AsyncSnapshot<MovieModel> snapshot) {
+//
+//                        switch (snapshot.connectionState) {
+//                          case ConnectionState.none:
+//                          case ConnectionState.waiting:
+//
+//                          return new Container();
+//                          default:
+//
+//
+//                            if (snapshot.hasError)
+//                            {
+//                              return new Center(child: Text('Some warning'));
+//                            }
+//
+//                              if(snapshot.hasData) {
+//                                return moviesList(snapshot);
+//
+//                            }
+//                            _progressDialog.dismissProgressDialog(context);
+//
+//                              return null;
+//                        }
+//                      }
+//                    ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                         child: CalendarStrip(
