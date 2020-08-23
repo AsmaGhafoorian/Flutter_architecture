@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
 import 'package:flutter_test_app/src/bloc/chart_bloc.dart';
-import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/chart_model.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_test_app/src/network/api_response.dart';
 import 'package:flutter_test_app/src/utils/custom_progress_dialog.dart';
 
 import 'package:inject/inject.dart';
@@ -21,11 +21,11 @@ import '../../bloc/MovieBloc.dart';
 //import 'package:custom_progress_dialog/custom_progress_dialog.dart';
 
 class Chart extends StatefulWidget{
-//  final MoviesBloc bloc;
+  final MoviesBloc bloc;
   final ChartBloc chartBloc;
 
   @provide
-  Chart( this.chartBloc);
+  Chart(this.bloc, this.chartBloc, );
 
   @override
   _ChartState createState() => _ChartState();
@@ -41,7 +41,7 @@ class _ChartState extends State<Chart>{
     super.initState();
     print("CHAAAAAAAAAAAAAAAARRRTTTT");
 //    Timer.run(() => showLoaderDialog(context));
-//    widget.bloc.fetchAllMovies();
+    widget.bloc.fetchAllMovies();
     widget.chartBloc.getChartData();
 
     _progressDialog.showProgressDialog(context,textToBeDisplayed: '');
@@ -51,7 +51,7 @@ class _ChartState extends State<Chart>{
   @override
   void dispose() {
     super.dispose();
-//    widget.bloc.dispose();
+    widget.bloc.dispose();
     widget.chartBloc.dispose();
   }
 
@@ -65,6 +65,25 @@ class _ChartState extends State<Chart>{
             children: <Widget>[
                 Column(
                   children: [
+                      StreamBuilder<ApiResponse<MovieModel>>(
+                      stream:  widget.bloc.allMovies,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              switch (snapshot.data.status) {
+                                case Status.LOADING:
+                                  return Container();
+                                  break;
+                                case Status.COMPLETED:
+                                  return moviesList(snapshot.data.data);
+                                  break;
+                                case Status.ERROR:
+                                  return Container();
+                              }
+                            }
+                            return Container();
+                          }
+                      ),
+
 //                    StreamBuilder(
 //                      stream:  widget.bloc.allMovies,
 //
@@ -109,17 +128,25 @@ class _ChartState extends State<Chart>{
                     Container(
                       child: SizedBox(
                         width: 300,
-                    height: 200,
-                    child: StreamBuilder(
-                        stream:  widget.chartBloc.chart,
-                        builder: (context, AsyncSnapshot<ChartModel> snapshot) {
-
-                          return snapshot.hasData
-                              ? barChart( snapshot)
-                              : Container();
-
-                        }
-                    ),
+                        height: 200,
+                        child:  StreamBuilder<ApiResponse<ChartModel>>(
+                            stream:  widget.chartBloc.chart,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                switch (snapshot.data.status) {
+                                  case Status.LOADING:
+                                    return Container();
+                                    break;
+                                  case Status.COMPLETED:
+                                    return barChart(snapshot.data.data);
+                                    break;
+                                  case Status.ERROR:
+                                    return Container();
+                                }
+                              }
+                              return Container();
+                            }
+                        ),
                       )
                     ),
                   ]
@@ -187,7 +214,7 @@ class _ChartState extends State<Chart>{
     );
   }
 
-  Widget moviesList(AsyncSnapshot<MovieModel> snapshot) {
+  Widget moviesList(MovieModel snapshot) {
 //    WidgetsBinding.instance.addPostFrameCallback((_) {
 //      Navigator.of(context, rootNavigator: true).pop('dialog');
 //    });
@@ -198,7 +225,7 @@ class _ChartState extends State<Chart>{
         child: ListView.builder(
           reverse: true,
           scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.items.length,
+          itemCount: snapshot.items.length,
           itemBuilder: (context, index) {
             return GestureDetector(
 
@@ -218,7 +245,7 @@ class _ChartState extends State<Chart>{
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children : [
                                 Image.network(
-                                  snapshot.data.items[index].iconUri,
+                                  snapshot.items[index].iconUri,
                                   width: 50,
                                 ),
                                 IconButton(
@@ -234,7 +261,7 @@ class _ChartState extends State<Chart>{
                           child: Align(
                             alignment: FractionalOffset.bottomCenter,
                               child: Text(
-                                    snapshot.data.items[index].profileName,
+                                    snapshot.items[index].profileName,
 
                                     style: TextStyle(
                                               fontSize: 14,
@@ -250,7 +277,7 @@ class _ChartState extends State<Chart>{
                             textDirection: TextDirection.rtl,
                             children: [
                               Text(
-                              snapshot.data.items[index].point.toString(),
+                              snapshot.items[index].point.toString(),
 
                               style: TextStyle(
                                   fontSize: 12,
@@ -272,11 +299,11 @@ class _ChartState extends State<Chart>{
 
   }
 
-  Widget barChart(AsyncSnapshot<ChartModel> snapshot) {
+  Widget barChart(ChartModel snapshot) {
     var seriesList = List<charts.Series<chartDataSeries, String>>();
 
-    var series = snapshot.data.series;
-    var scaleX = snapshot.data.scale;
+    var series = snapshot.series;
+    var scaleX = snapshot.scale;
     var colors = [Colors.blue, Colors.yellow];
       for (var index=0;index<= series.length-1; index++) {
         List<chartDataSeries>  data = List<chartDataSeries>();

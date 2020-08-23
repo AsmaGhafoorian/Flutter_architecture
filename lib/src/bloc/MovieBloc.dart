@@ -8,11 +8,15 @@ import 'package:flutter_test_app/src/network/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:inject/inject.dart';
 
+
+
+// agar dar safhehaye mokhtalef bekhahim allMovei ro listen konim ba BehaviorSubject emkan pazir hast vali ba StreamController na.
+//Apiresponse baraye in tarif shode ke betoonim Error coode haye mokhtalef ro begirim va message monaseb ro neshoon bedim.
 @provide
 class MoviesBloc {
   final Repository _repository ;
+  StreamController _movieListController= BehaviorSubject<ApiResponse<MovieModel>>(); // BehaviorSubject is, by default, a broadcast (aka hot) controller, in order to fulfill the Rx Subject contract. This means the Subject's stream can be listened to multiple time
   StreamSink<ApiResponse<MovieModel>> get _moviesFetcher => _movieListController.sink;
-  StreamController _movieListController= StreamController<ApiResponse<MovieModel>>();
 
   Stream<ApiResponse<MovieModel>> get allMovies => _movieListController.stream;
   MoviesBloc(this._repository);

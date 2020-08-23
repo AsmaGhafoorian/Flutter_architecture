@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_app/src/bloc/MovieBloc.dart';
-import 'package:flutter_test_app/src/bloc/movie_detail_bloc_provider.dart';
 import 'package:flutter_test_app/src/model/movie_model.dart';
 import 'package:flutter_test_app/src/network/api_response.dart';
 
