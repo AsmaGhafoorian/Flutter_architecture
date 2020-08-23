@@ -17,7 +17,7 @@ class ErrorHandling{
   }
 
   dynamic returnResponse(http.Response response) {
-    print(response.body.toString());
+//    print(response.body.toString());
       switch (response.statusCode) {
         case 200:
           var responseJson = response.bodyBytes;

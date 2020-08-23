@@ -16,17 +16,18 @@ import 'package:inject/inject.dart';
 class MoviesBloc {
   final Repository _repository ;
   StreamController _movieListController= BehaviorSubject<ApiResponse<MovieModel>>(); // BehaviorSubject is, by default, a broadcast (aka hot) controller, in order to fulfill the Rx Subject contract. This means the Subject's stream can be listened to multiple time
-  StreamSink<ApiResponse<MovieModel>> get _moviesFetcher => _movieListController.sink;
+  StreamSink<ApiResponse<MovieModel>> get _moviesSink => _movieListController.sink;
 
   Stream<ApiResponse<MovieModel>> get allMovies => _movieListController.stream;
   MoviesBloc(this._repository);
 
   fetchAllMovies() async {
+    _moviesSink.add(ApiResponse.loading('Fetching'));
     try {
       MovieModel itemModel = await _repository.getAllMovie();
-      _moviesFetcher.add(ApiResponse.completed(itemModel));
+      _moviesSink.add(ApiResponse.completed(itemModel));
     }catch(e){
-      _moviesFetcher.add(ApiResponse.error(e.toString()));
+      _moviesSink.add(ApiResponse.error(e.toString()));
     }
   }
 

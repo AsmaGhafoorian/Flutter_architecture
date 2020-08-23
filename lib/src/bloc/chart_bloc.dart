@@ -18,16 +18,17 @@ class ChartBloc{
 
   ChartBloc(this._repository);
   StreamController _chartController= BehaviorSubject<ApiResponse<ChartModel>>();
-  StreamSink<ApiResponse<ChartModel>> get _chartFetcher => _chartController.sink;
+  StreamSink<ApiResponse<ChartModel>> get _chartSink => _chartController.sink;
 
   Stream<ApiResponse<ChartModel>> get chart => _chartController.stream;
 
   getChartData() async {
+    _chartSink.add(ApiResponse.loading('Fetching'));
     try {
       ChartModel itemModel = await _repository.getChartData();
-      _chartFetcher.add(ApiResponse.completed(itemModel));
+      _chartSink.add(ApiResponse.completed(itemModel));
     }catch(e){
-      _chartFetcher.add(ApiResponse.error(e.toString()));
+      _chartSink.add(ApiResponse.error(e.toString()));
     }
   }
 
