@@ -30,6 +30,7 @@ dependencies:
   charts_flutter: ^0.8.1
   progress_dialog: ^1.2.4
   synchronized: ^2.1.0 #used in progress loading
+#  modal_bottom_sheet: ^0.2.0+1
 
   inject:
     path: ./injection/inject.dart/package/inject
